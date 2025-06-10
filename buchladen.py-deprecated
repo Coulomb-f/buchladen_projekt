@@ -1,0 +1,322 @@
+# -*- coding: utf-8 -*-
+
+# Globale Design-Konstanten
+FONT_FAMILY = "Constantia"  # Eine moderne, klare Schriftart
+FONT_SIZE_DEFAULT = 12
+FONT_SIZE_LISTBOX = 12
+FONT_SIZE_BUTTON = 11
+FONT_SIZE_TOTAL_LABEL = 14
+FONT_SIZE_LABELFRAME_TITLE = 12
+
+# Button Farben (Material-Design inspiriert)
+COLOR_BUTTON_BG = "#F5F5F5"  # Sehr helles Grau (fast weiß)
+COLOR_BUTTON_FG = "#424242"  # Dunkelgrauer Text
+COLOR_BUTTON_HOVER_BG = "#E0E0E0" # Helleres Grau für Hover
+COLOR_BUTTON_PRESSED_BG = "#BDBDBD" # Mittleres Grau für Pressed
+
+COLOR_BUTTON_PRIMARY_BG = "#2196F3" # Material Blau
+COLOR_BUTTON_PRIMARY_FG = "#FFFFFF" # Weißer Text
+COLOR_BUTTON_PRIMARY_HOVER_BG = "#1976D2" # Dunkleres Material Blau
+COLOR_BUTTON_PRIMARY_PRESSED_BG = "#0D47A1" # Sehr dunkles Material Blau
+
+import tkinter as tk
+from tkinter import ttk  # Themed widgets for a more modern look
+from tkinter import messagebox
+
+# ===================================================================
+#
+#  TEIL 1: Backend-Klassen (unverändert von vorhin)
+#
+# ===================================================================
+
+class Buch:
+    """Repräsentiert ein einzelnes Buch mit Titel, Autor, Kategorie und Preis."""
+    def __init__(self, titel: str, autor: str, kategorie: str, preis: float, verboten: bool = False, indiziert: bool = False):
+        self.titel = titel
+        self.autor = autor
+        self.kategorie = kategorie
+        self.preis = preis
+        self.verboten = verboten
+        self.indiziert = indiziert
+
+    def __str__(self) -> str:
+        """Gibt eine benutzerfreundliche Zeichenkette für das Buch zurück."""
+        status = " [VERBOTEN]" if self.verboten else ""
+        if not status and self.indiziert: # Nur anzeigen, wenn nicht schon verboten
+            status = " [INDIZIERT FSK18]"
+        preis_str = "{:.2f}".format(self.preis).replace('.', ',')
+        return f"'{self.titel}' von {self.autor} ({preis_str} €){status}"
+
+    def __repr__(self) -> str:
+        """Gibt eine eindeutige, technische Repräsentation des Objekts zurück."""
+        return f"Buch(titel='{self.titel}', autor='{self.autor}', preis={self.preis}, verboten={self.verboten}, indiziert={self.indiziert})"
+
+class Buchladen:
+    """Repräsentiert einen Online-Buchladen mit einem Inventar an Büchern."""
+    def __init__(self, name: str):
+        self.name = name
+        self.inventar = []
+
+    def buch_hinzufuegen(self, buch: Buch):
+        if isinstance(buch, Buch):
+            self.inventar.append(buch)
+        else:
+            print("Fehler: Es können nur Buch-Objekte hinzugefügt werden.")
+
+    def berechne_gesamtpreis(self, buch_auswahl: list) -> float:
+        return sum(buch.preis for buch in buch_auswahl if not buch.verboten and not buch.indiziert)
+
+    def suche_nach_kategorie(self, kategorie_suche: str) -> list:
+        """Durchsucht das Inventar nach Büchern einer bestimmten Kategorie (case-insensitive)."""
+        gefundene_buecher = []
+        for buch in self.inventar:
+            if buch.kategorie.lower() == kategorie_suche.lower():
+                gefundene_buecher.append(buch)
+        return gefundene_buecher
+# ===================================================================
+#
+#  TEIL 2: GUI-Anwendung (Frontend)
+#
+# ===================================================================
+
+class BuchladenApp:
+    def __init__(self, root_window):
+        self.root = root_window
+        self.root.title("Das Leseparadies - GUI")
+        self.root.geometry("1200x600") # Set initial window size
+
+        # TTK Styling
+        self.style = ttk.Style()
+        self._konfiguriere_stile()
+
+        # 1. Backend-Instanz erstellen und mit Daten füllen
+        self.buchladen = Buchladen("Das Leseparadies")
+        self._erstelle_demodaten()
+        
+        self.einkaufswagen = []
+
+        # 2. GUI-Layout erstellen
+        self._erstelle_widgets()
+
+        # 3. GUI mit Daten füllen
+        self._fuelle_inventar_liste()
+
+    def _konfiguriere_stile(self):
+        """Konfiguriert die ttk Stile für die Anwendung."""
+        self.style.theme_use('clam') # 'clam' ist gut für plattformübergreifendes Styling
+
+        # Standard-Schriftart für alle ttk-Widgets
+        self.style.configure(".", font=(FONT_FAMILY, FONT_SIZE_DEFAULT))
+
+        # Stil für LabelFrames und deren Titel
+        self.style.configure("TLabelFrame", font=(FONT_FAMILY, FONT_SIZE_DEFAULT), padding=5)
+        self.style.configure("TLabelFrame.Label", font=(FONT_FAMILY, FONT_SIZE_LABELFRAME_TITLE, "bold"))
+
+        # Stil für allgemeine Labels
+        self.style.configure("TLabel", font=(FONT_FAMILY, FONT_SIZE_DEFAULT))
+
+        # Button-Stile (Material-Design-ähnlich)
+        self.style.configure("App.TButton",
+                             font=(FONT_FAMILY, FONT_SIZE_BUTTON),
+                             padding=(10, 6), relief="flat",
+                             background=COLOR_BUTTON_BG, foreground=COLOR_BUTTON_FG)
+        self.style.map("App.TButton",
+            background=[('pressed', COLOR_BUTTON_PRESSED_BG), ('active', COLOR_BUTTON_HOVER_BG)])
+
+        self.style.configure("Primary.TButton",
+                             font=(FONT_FAMILY, FONT_SIZE_BUTTON, "bold"),
+                             padding=(12, 8), relief="flat",
+                             background=COLOR_BUTTON_PRIMARY_BG, foreground=COLOR_BUTTON_PRIMARY_FG)
+        self.style.map("Primary.TButton",
+            background=[('pressed', COLOR_BUTTON_PRIMARY_PRESSED_BG), ('active', COLOR_BUTTON_PRIMARY_HOVER_BG)])
+
+    def _erstelle_demodaten(self):
+        """Helper-Methode, um den Buchladen mit Büchern zu füllen."""
+        buecher = [
+            Buch("Der Herr der Ringe", "J.R.R. Tolkien", "Roman", 25.99),
+            Buch("Eine kurze Geschichte der Zeit", "Stephen Hawking", "Wissenschaft", 19.95),
+            Buch("Sapiens: Eine kurze Geschichte der Menschheit", "Yuval Noah Harari", "Sachbuch", 22.00),
+            Buch("Dune - Der Wüstenplanet", "Frank Herbert", "Roman", 18.50),
+            Buch("Clean Code", "Robert C. Martin", "Sachbuch", 44.90),
+            Buch("Der Prozess", "Franz Kafka", "Roman", 12.99),
+            Buch("1984", "George Orwell", "Roman", 15.00),
+            Buch("Der Alchimist", "Paulo Coelho", "Roman", 10.99),
+            Buch("Die Verwandlung", "Franz Kafka", "Roman", 8.99),
+            Buch("Der Steppenwolf", "Hermann Hesse", "Roman", 14.99),
+            Buch("Der kleine Prinz", "Antoine de Saint-Exupéry", "Kinderbuch", 9.99),
+            Buch("Die Physiker", "Friedrich Dürrenmatt", "Drama", 11.99),
+            Buch("Mein Kampf", "Adolf Hitler", "Politik", 0.00, verboten=True),
+            Buch("Bitte anstrapsen - Lesebuch der Lust", "Ullstein Verlag", "Erotik", 9.99, indiziert=True),
+            Buch("Naschkatze – Urlaubsvergnügen voller Lust", "Ullstein Verlag", "Erotik", 9.99, indiziert=True),
+        ]
+        for buch in buecher:
+            self.buchladen.buch_hinzufuegen(buch)
+
+    def _erstelle_widgets(self):
+        """Erstellt und platziert alle GUI-Elemente (Widgets)."""
+        # Haupt-Frame
+        main_frame = ttk.Frame(self.root, padding="10")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # --- Linke Spalte: Inventar ---
+        inventar_frame = ttk.LabelFrame(main_frame, text="Unser Inventar")
+        inventar_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nswe")
+        
+        self.inventar_listbox = tk.Listbox(inventar_frame, height=20, width=50, font=(FONT_FAMILY, FONT_SIZE_LISTBOX), exportselection=False)
+        self.inventar_listbox.pack(pady=5, padx=5, fill=tk.BOTH, expand=True)
+
+        # Horizontal Scrollbar für Inventar-Listbox
+        inventar_scrollbar_x = ttk.Scrollbar(inventar_frame, orient=tk.HORIZONTAL, command=self.inventar_listbox.xview)
+        inventar_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=(0,5))
+        self.inventar_listbox.configure(xscrollcommand=inventar_scrollbar_x.set)
+
+
+        # --- Mittlere Spalte: Buttons ---
+        button_frame = ttk.Frame(main_frame)
+        button_frame.grid(row=0, column=1, padx=5, pady=5, sticky="n")
+
+        self.add_button = ttk.Button(button_frame, text=">> In den Wagen", command=self._zum_wagen_hinzufuegen, style="Primary.TButton")
+        self.add_button.pack(pady=20)
+
+        self.remove_button = ttk.Button(button_frame, text="<< Entfernen", command=self._aus_dem_wagen_entfernen, style="App.TButton")
+        self.remove_button.pack(pady=5)
+
+        # --- Rechte Spalte: Einkaufswagen ---
+        wagen_frame = ttk.LabelFrame(main_frame, text="Ihr Einkaufswagen")
+        wagen_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nswe")
+
+        self.wagen_listbox = tk.Listbox(wagen_frame, height=20, width=50, font=(FONT_FAMILY, FONT_SIZE_LISTBOX), exportselection=False)
+        self.wagen_listbox.pack(pady=5, padx=5, fill=tk.BOTH, expand=True)
+
+        # Horizontal Scrollbar für Wagen-Listbox
+        wagen_scrollbar_x = ttk.Scrollbar(wagen_frame, orient=tk.HORIZONTAL, command=self.wagen_listbox.xview)
+        wagen_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=(0,5))
+        self.wagen_listbox.configure(xscrollcommand=wagen_scrollbar_x.set)
+
+        # --- Untere Zeile: Gesamtpreis und Kasse ---
+        kasse_frame = ttk.Frame(main_frame)
+        kasse_frame.grid(row=1, column=0, columnspan=3, pady=(10, 20), sticky="ew") # Increased bottom padding
+
+        self.total_label_var = tk.StringVar(value="Gesamtpreis: 0,00 €")
+        total_label = ttk.Label(kasse_frame, textvariable=self.total_label_var, font=(FONT_FAMILY, FONT_SIZE_TOTAL_LABEL, "bold"))
+        total_label.pack(side=tk.LEFT, padx=10)
+
+        self.kasse_button = ttk.Button(kasse_frame, text="Zur Kasse", command=self._zur_kasse, style="Primary.TButton")
+        self.kasse_button.pack(side=tk.RIGHT, padx=10)
+
+        # Grid-Konfiguration für Skalierbarkeit
+        main_frame.columnconfigure(0, weight=1)
+        main_frame.columnconfigure(2, weight=1)
+
+    def _fuelle_inventar_liste(self):
+        """Füllt die Listbox des Inventars mit den Büchern."""
+        self.inventar_listbox.delete(0, tk.END) # Bestehende Einträge löschen
+        for buch in self.buchladen.inventar:
+            self.inventar_listbox.insert(tk.END, str(buch))
+    
+    def _aktualisiere_wagen_anzeige(self):
+        """Aktualisiert die Listbox des Einkaufswagens und den Gesamtpreis."""
+        self.wagen_listbox.delete(0, tk.END)
+        for buch in self.einkaufswagen:
+            self.wagen_listbox.insert(tk.END, str(buch))
+        
+        gesamtpreis = self.buchladen.berechne_gesamtpreis(self.einkaufswagen)
+        gesamtpreis_str = "{:.2f}".format(gesamtpreis).replace('.', ',')
+        self.total_label_var.set(f"Gesamtpreis: {gesamtpreis_str} €")
+
+    def _zum_wagen_hinzufuegen(self):
+        """Fügt das ausgewählte Buch aus dem Inventar zum Wagen hinzu."""
+        try:
+            selected_indices = self.inventar_listbox.curselection()
+            if not selected_indices:
+                return # Nichts ausgewählt
+            
+            selected_index = selected_indices[0]
+            buch_objekt = self.buchladen.inventar[selected_index]
+
+            if buch_objekt.verboten:
+                messagebox.showwarning("Nicht verfügbar", f"Das Buch '{buch_objekt.titel}' ist nicht verkäuflich.")
+                return
+            elif buch_objekt.indiziert:
+                messagebox.showwarning("Altersbeschränkung", f"Das Buch '{buch_objekt.titel}' ist indiziert (FSK18) und kann nicht direkt in den Warenkorb gelegt werden.")
+                return
+
+            self.einkaufswagen.append(buch_objekt)
+            self._aktualisiere_wagen_anzeige()
+        except IndexError:
+            # Sollte nicht passieren, aber sicher ist sicher
+            messagebox.showerror("Fehler", "Auswahl konnte nicht verarbeitet werden.")
+            
+    def _aus_dem_wagen_entfernen(self):
+        """Entfernt das ausgewählte Buch aus dem Einkaufswagen."""
+        try:
+            selected_indices = self.wagen_listbox.curselection()
+            if not selected_indices:
+                return # Nichts ausgewählt
+
+            selected_index = selected_indices[0]
+            # Wir entfernen das Objekt direkt aus der Liste
+            del self.einkaufswagen[selected_index]
+            self._aktualisiere_wagen_anzeige()
+        except IndexError:
+            messagebox.showerror("Fehler", "Auswahl konnte nicht verarbeitet werden.")
+
+    def _zur_kasse(self):
+        """Simuliert den Kassiervorgang."""
+        if not self.einkaufswagen:
+            messagebox.showinfo("Information", "Ihr Einkaufswagen ist leer.")
+            return
+
+        gesamtpreis = self.buchladen.berechne_gesamtpreis(self.einkaufswagen)
+        gesamtpreis_str = "{:.2f}".format(gesamtpreis).replace('.', ',')
+        message = f"Vielen Dank für Ihren Einkauf!\n\nGesamtsumme: {gesamtpreis_str} €"
+        messagebox.showinfo("Kasse", message)
+        
+        # Optional: Wagen nach dem Kauf leeren
+        self.einkaufswagen.clear()
+        self._aktualisiere_wagen_anzeige()
+
+# ===================================================================
+#
+#  TEIL 3: Anwendung starten
+#
+# ===================================================================
+
+if __name__ == "__main__":
+    # --- Testblock für Backend-Funktionalitäten (gemäß Aufgabe c) ---
+    print("--- Backend Test Start ---")
+    # Erstelle ein paar Buchobjekte
+    buch1 = Buch("Python Crashkurs", "Eric Matthes", "Programmierung", 30.00)
+    buch2 = Buch("Der Pragmatische Programmierer", "Andrew Hunt", "Programmierung", 25.50)
+    buch3 = Buch("Faust I", "Johann Wolfgang von Goethe", "Klassiker", 7.99)
+    buch4 = Buch("Die Verwandlung", "Franz Kafka", "Klassiker", 5.00, indiziert=True) # Test mit indiziert
+
+    # Erstelle einen Buchladen und füge Bücher hinzu
+    test_laden = Buchladen("Test-Buchladen")
+    test_laden.buch_hinzufuegen(buch1)
+    test_laden.buch_hinzufuegen(buch2)
+    test_laden.buch_hinzufuegen(buch3)
+    test_laden.buch_hinzufuegen(buch4)
+
+    print(f"\nInventar im '{test_laden.name}':")
+    for buch_item in test_laden.inventar:
+        print(f"- {buch_item}")
+
+    # Test: Bücher nach Kategorie durchsuchen
+    print("\nSuche nach Kategorie 'Programmierung':")
+    prog_buecher = test_laden.suche_nach_kategorie("Programmierung")
+    for buch_item in prog_buecher:
+        print(f"- {buch_item}")
+
+    # Test: Gesamtpreis für eine Auswahl berechnen
+    auswahl = [buch1, buch3, buch4] # buch4 ist indiziert und sollte nicht zum Preis beitragen
+    gesamtpreis_test = test_laden.berechne_gesamtpreis(auswahl)
+    print(f"\nGesamtpreis für Auswahl ({[str(b) for b in auswahl]}): {gesamtpreis_test:.2f} €")
+    print("--- Backend Test Ende ---\n")
+
+    # Erstelle das Hauptfenster
+    root = tk.Tk()
+    # Erstelle die Anwendungs-Instanz
+    app = BuchladenApp(root)
+    # Starte die GUI-Event-Schleife
+    root.mainloop()

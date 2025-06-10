@@ -1,0 +1,226 @@
+[
+  {
+    "titel": "Der Herr der Ringe",
+    "autor": "J.R.R. Tolkien",
+    "kategorie": "Roman",
+    "preis": 25.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Eine kurze Geschichte der Zeit",
+    "autor": "Stephen Hawking",
+    "kategorie": "Wissenschaft",
+    "preis": 19.95,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Sapiens: Eine kurze Geschichte der Menschheit",
+    "autor": "Yuval Noah Harari",
+    "kategorie": "Sachbuch",
+    "preis": 22.0,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Dune - Der Wüstenplanet",
+    "autor": "Frank Herbert",
+    "kategorie": "Roman",
+    "preis": 18.5,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Clean Code",
+    "autor": "Robert C. Martin",
+    "kategorie": "Sachbuch",
+    "preis": 44.9,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Prozess",
+    "autor": "Franz Kafka",
+    "kategorie": "Roman",
+    "preis": 12.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "1984",
+    "autor": "George Orwell",
+    "kategorie": "Roman",
+    "preis": 15.0,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Alchimist",
+    "autor": "Paulo Coelho",
+    "kategorie": "Roman",
+    "preis": 10.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die Verwandlung",
+    "autor": "Franz Kafka",
+    "kategorie": "Roman",
+    "preis": 8.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Steppenwolf",
+    "autor": "Hermann Hesse",
+    "kategorie": "Roman",
+    "preis": 14.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der kleine Prinz",
+    "autor": "Antoine de Saint-Exupéry",
+    "kategorie": "Kinderbuch",
+    "preis": 9.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die Physiker",
+    "autor": "Friedrich Dürrenmatt",
+    "kategorie": "Drama",
+    "preis": 11.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Mein Kampf",
+    "autor": "Adolf Hitler",
+    "kategorie": "Politik",
+    "preis": 0.0,
+    "verboten": true,
+    "indiziert": false
+  },
+  {
+    "titel": "Bitte anstrapsen - Lesebuch der Lust",
+    "autor": "Ullstein Verlag",
+    "kategorie": "Erotik",
+    "preis": 9.99,
+    "verboten": false,
+    "indiziert": true
+  },
+  {
+    "titel": "Naschkatze – Urlaubsvergnügen voller Lust",
+    "autor": "Ullstein Verlag",
+    "kategorie": "Erotik",
+    "preis": 9.99,
+    "verboten": false,
+    "indiziert": true
+  },
+  {
+    "titel": "Der Weg des wahren Mannes ",
+    "autor": "David Deida",
+    "kategorie": "Erotik",
+    "preis": 20.0,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Schlampen mit Moral: Erweiterte Neuausgabe",
+    "autor": "Janet W. Hardy",
+    "kategorie": "Erotik",
+    "preis": 16.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die 120 Tage von Sodom",
+    "autor": "Marquis de Sade",
+    "kategorie": "Erotik",
+    "preis": 12.99,
+    "verboten": false,
+    "indiziert": true
+  },
+  {
+    "titel": "Ein bisschen härter ist viel besser",
+    "autor": "Sabine Deunan",
+    "kategorie": "Erotik",
+    "preis": 12.99,
+    "verboten": false,
+    "indiziert": true
+  },
+  {
+    "titel": "Frühe mathematische Bildung",
+    "autor": "Christiane Benz",
+    "kategorie": "Wissenschaft",
+    "preis": 34.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Tägliche Stoiker",
+    "autor": "Ryan Holiday",
+    "kategorie": "Philosophie",
+    "preis": 24.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Weg des Künstlers",
+    "autor": "Julia Cameron",
+    "kategorie": "Selbsthilfe",
+    "preis": 18.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die Macht der Gewohnheit",
+    "autor": "Charles Duhigg",
+    "kategorie": "Psychologie",
+    "preis": 16.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die Entdeckung der Langsamkeit",
+    "autor": "Sten Nadolny",
+    "kategorie": "Roman",
+    "preis": 14.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Schatten des Windes",
+    "autor": "Carlos Ruiz Zafón",
+    "kategorie": "Roman",
+    "preis": 19.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Der Name der Rose",
+    "autor": "Umberto Eco",
+    "kategorie": "Roman",
+    "preis": 21.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Die unerträgliche Leichtigkeit des Seins",
+    "autor": "Milan Kundera",
+    "kategorie": "Roman",
+    "preis": 17.99,
+    "verboten": false,
+    "indiziert": false
+  },
+  {
+    "titel": "Selbstbetrachtungen",
+    "autor": "Marc Aurel",
+    "kategorie": "Philosophie",
+    "preis": 12.99,
+    "verboten": false,
+    "indiziert": false
+  }
+]
