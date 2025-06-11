@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
+import os # Fehlenden os-Import hinzufügen
 from tkinter import ttk, messagebox, simpledialog
 from buch_model import Buch # Importiere die Buch-Klasse
+from PIL import Image, ImageTk # Importiere Pillow Module für Bildanzeige
 # from buch_model import Buch 
 from buchladen_logik import Buchladen
 
@@ -32,6 +34,7 @@ class BuchladenApp:
         self.einkaufswagen = []
         self.aktuell_angezeigte_buecher = [] # Wichtig für korrekte Auswahl
 
+        self.buch_bild_label = None # Initialisiere das Bild-Label Attribut
         self.root.title("Das Leseparadies - GUI")
         self.root.geometry("1200x650") # Etwas mehr Höhe für das Dropdown
 
@@ -73,7 +76,7 @@ class BuchladenApp:
         self.kategorie_dropdown.bind("<<ComboboxSelected>>", self._on_filter_change)
 
         # --- Linke Spalte: Inventar ---
-        inventar_frame = ttk.LabelFrame(main_frame, text="Unser Inventar")
+        inventar_frame = ttk.LabelFrame(main_frame, text="Unser Inventar (Klicken für Bild)")
         inventar_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nswe")
         
         # Konfiguriere Grid-Gewichtung für inventar_frame
@@ -91,10 +94,14 @@ class BuchladenApp:
         inventar_scrollbar_x.grid(row=1, column=0, sticky="ew", padx=5, pady=(0,5))
         self.inventar_listbox.configure(xscrollcommand=inventar_scrollbar_x.set)
 
+        # Binde Event für Listbox-Auswahl
+        self.inventar_listbox.bind("<<ListboxSelect>>", self._on_inventar_select)
+
         # --- Mittlere Spalte: Buttons ---
         button_frame = ttk.Frame(main_frame)
         button_frame.grid(row=1, column=1, padx=10, pady=5, sticky="n")
         self.add_button = ttk.Button(button_frame, text=">> In den Wagen", command=self._zum_wagen_hinzufuegen, style="Primary.TButton")
+        self.add_button.config(state=tk.DISABLED) # Deaktiviert, bis Buch ausgewählt
         self.add_button.pack(pady=20, fill=tk.X)
         self.remove_button = ttk.Button(button_frame, text="<< Entfernen", command=self._aus_dem_wagen_entfernen, style="App.TButton")
         self.remove_button.pack(pady=5, fill=tk.X)
@@ -117,9 +124,15 @@ class BuchladenApp:
         wagen_scrollbar_x.grid(row=1, column=0, sticky="ew", padx=5, pady=(0,5))
         self.wagen_listbox.configure(xscrollcommand=wagen_scrollbar_x.set)
 
+        # --- Bildanzeige (Neue Spalte 3) ---
+        image_frame = ttk.Frame(main_frame)
+        image_frame.grid(row=1, column=3, padx=5, pady=5, sticky="n")
+        self.buch_bild_label = ttk.Label(image_frame) # Label für das Bild
+        self.buch_bild_label.pack()
+
         # --- Untere Zeile: Gesamtpreis und Kasse ---
         kasse_frame = ttk.Frame(main_frame)
-        kasse_frame.grid(row=2, column=0, columnspan=3, pady=(15, 10), sticky="ew")
+        kasse_frame.grid(row=2, column=0, columnspan=4, pady=(15, 10), sticky="ew") # Spaltenspan anpassen
         self.total_label_var = tk.StringVar(value="Gesamtpreis: 0,00 €")
         total_label = ttk.Label(kasse_frame, textvariable=self.total_label_var, font=(FONT_FAMILY, FONT_SIZE_TOTAL_LABEL, "bold"))
         total_label.pack(side=tk.LEFT, padx=10)
@@ -129,6 +142,7 @@ class BuchladenApp:
         main_frame.rowconfigure(1, weight=1) # Inventar/Wagen-Zeile soll skalieren
         main_frame.columnconfigure(0, weight=1) # Inventar-Spalte
         main_frame.columnconfigure(2, weight=1) # Wagen-Spalte
+        main_frame.columnconfigure(3, weight=0) # Bild-Spalte (feste Größe)
         main_frame.columnconfigure(1, weight=0) # Button-Spalte nicht
 
     def _erstelle_menuleiste(self):
@@ -180,8 +194,36 @@ class BuchladenApp:
         for buch in buecher_liste:
             self.inventar_listbox.insert(tk.END, str(buch))
         # self.inventar_listbox.update_idletasks() # Vorheriger Versuch
+        
+        # Nach dem Füllen der Liste: Bild zurücksetzen und Add-Button deaktivieren
+        self._clear_buch_bild()
+        self.add_button.config(state=tk.DISABLED)
+        
         self.root.update() # Stärkeres Update für das gesamte Fenster
     
+    def _on_inventar_select(self, event):
+        """Wird aufgerufen, wenn ein Buch in der Inventar-Listbox ausgewählt wird."""
+        try:
+            selected_indices = self.inventar_listbox.curselection()
+            if not selected_indices:
+                self._clear_buch_bild()
+                self.add_button.config(state=tk.DISABLED)
+                return
+            
+            selected_index = selected_indices[0]
+            buch_objekt = self.aktuell_angezeigte_buecher[selected_index]
+            self._zeige_buch_bild(buch_objekt)
+            self.add_button.config(state=tk.NORMAL) # Add-Button aktivieren
+
+        except IndexError:
+            self._clear_buch_bild()
+            self.add_button.config(state=tk.DISABLED)
+            # print("DEBUG: IndexError in _on_inventar_select")
+        except Exception as e:
+            print(f"Fehler in _on_inventar_select: {e}")
+            self._clear_buch_bild()
+            self.add_button.config(state=tk.DISABLED)
+
     def _aktualisiere_wagen_anzeige(self):
         self.wagen_listbox.delete(0, tk.END)
         for buch in self.einkaufswagen:
@@ -220,7 +262,7 @@ class BuchladenApp:
             # Dieser Fehler sollte seltener auftreten, wenn aktuell_angezeigte_buecher korrekt ist
             messagebox.showerror("Fehler", "Auswahl konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut.", parent=self.root)
             # Optionale Debug-Ausgabe für Entwickler:
-            # selected_indices_debug = self.inventar_listbox.curselection() # Erneut abrufen für den Fall, dass es sich geändert hat
+            # selected_indices_debug = self.inventar_listbox.cureselection() # Erneut abrufen für den Fall, dass es sich geändert hat
             # print(f"DEBUG: IndexError in _zum_wagen_hinzufuegen. Selected indices: {selected_indices_debug}, len(aktuell_angezeigte_buecher): {len(self.aktuell_angezeigte_buecher)}")
         except Exception as e:
             messagebox.showerror("Unerwarteter Fehler", f"Ein Fehler ist aufgetreten: {e}", parent=self.root)
@@ -246,6 +288,45 @@ class BuchladenApp:
         self.einkaufswagen.clear()
         self._aktualisiere_wagen_anzeige()
 
+    def _zeige_buch_bild(self, buch_objekt):
+        """Zeigt das Bild zum Buch an, falls vorhanden."""
+        if not hasattr(self, "buch_bild_label") or self.buch_bild_label is None:
+            return  # Bild-Label existiert nicht
+
+        image_path = getattr(buch_objekt, "image_path", None)
+        if not image_path:
+            self._clear_buch_bild()
+            return
+
+        # Absoluten Pfad berechnen, falls nötig
+        if not os.path.isabs(image_path):
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            image_path = os.path.join(script_dir, image_path)
+
+        if not os.path.exists(image_path):
+            self._clear_buch_bild()
+            return
+
+        try:
+            # Pillow >=9.1.0: Image.Resampling.LANCZOS, sonst fallback auf Image.LANCZOS
+            try:
+                resample = Image.Resampling.LANCZOS
+            except AttributeError:
+                resample = Image.Resampling.LANCZOS
+            img = Image.open(image_path)
+            img = img.resize((180, 260), resample)
+            photo = ImageTk.PhotoImage(img)
+            self.buch_bild_label.config(image=photo)
+            self.buch_bild_label.image = photo  # type: ignore[attr-defined]
+        except Exception as e:
+            print(f"Fehler beim Laden des Bildes: {e}")
+            self._clear_buch_bild()
+
+    def _clear_buch_bild(self):
+        if hasattr(self, "buch_bild_label") and self.buch_bild_label is not None:
+            self.buch_bild_label.config(image="")
+            self.buch_bild_label.image = None  # type: ignore[attr-defined]
+
 class AddBookWindow(tk.Toplevel):
     def __init__(self, parent, buchladen_instanz: Buchladen, json_dateipfad: str):
         super().__init__(parent)
@@ -262,6 +343,7 @@ class AddBookWindow(tk.Toplevel):
         self.autor_var = tk.StringVar()
         self.kategorie_var = tk.StringVar()
         self.preis_var = tk.StringVar()
+        self.image_path_var = tk.StringVar() # Variable für Bildpfad
         self.verboten_var = tk.BooleanVar()
         self.indiziert_var = tk.BooleanVar()
 
@@ -285,10 +367,13 @@ class AddBookWindow(tk.Toplevel):
         self.kategorie_combobox.grid(row=2, column=1, sticky="ew", pady=5)
         self.kategorie_combobox.bind("<<ComboboxSelected>>", self._on_kategorie_selected)
 
-        ttk.Label(main_frame, text="Preis (€):").grid(row=3, column=0, sticky="w", pady=5)
-        ttk.Entry(main_frame, textvariable=self.preis_var, width=10).grid(row=3, column=1, sticky="w", pady=5)
+        ttk.Label(main_frame, text="Bildpfad:").grid(row=3, column=0, sticky="w", pady=5) # Zeile 3 für Bildpfad
+        ttk.Entry(main_frame, textvariable=self.image_path_var, width=40).grid(row=3, column=1, sticky="ew", pady=5) # Zeile 3
 
-        # Checkboxen
+        ttk.Label(main_frame, text="Preis (€):").grid(row=4, column=0, sticky="w", pady=5) # Zeile 4 für Preis
+        ttk.Entry(main_frame, textvariable=self.preis_var, width=10).grid(row=4, column=1, sticky="w", pady=5) # Zeile 4
+
+        # Checkboxen (Reihennummer anpassen)
         check_frame = ttk.Frame(main_frame)
         check_frame.grid(row=4, column=0, columnspan=2, pady=10, sticky="w")
         ttk.Checkbutton(check_frame, text="Verboten", variable=self.verboten_var).pack(side=tk.LEFT, padx=5)
@@ -296,7 +381,7 @@ class AddBookWindow(tk.Toplevel):
         
         # Buttons
         button_frame = ttk.Frame(main_frame)
-        button_frame.grid(row=5, column=0, columnspan=2, pady=20)
+        button_frame.grid(row=6, column=0, columnspan=2, pady=20) # Reihennummer anpassen
 
         save_button = ttk.Button(button_frame, text="Speichern", command=self._speichern, style="Primary.TButton")
         save_button.pack(side=tk.LEFT, padx=10)
@@ -311,6 +396,7 @@ class AddBookWindow(tk.Toplevel):
         autor = self.autor_var.get().strip()
         kategorie = self.kategorie_var.get().strip()
         preis_str = self.preis_var.get().strip().replace(',', '.') # Komma zu Punkt für float
+        image_path = self.image_path_var.get().strip() # Bildpfad lesen
         verboten = self.verboten_var.get()
         indiziert = self.indiziert_var.get()
 
@@ -334,7 +420,7 @@ class AddBookWindow(tk.Toplevel):
             return
 
         # Neues Buch-Objekt erstellen
-        neues_buch = Buch(titel, autor, kategorie, preis, verboten, indiziert)
+        neues_buch = Buch(titel, autor, kategorie, preis, verboten, indiziert, image_path if image_path else None) # None speichern, wenn leer
 
         # Zum Inventar hinzufügen und speichern
         self.buchladen.buch_hinzufuegen(neues_buch)
@@ -346,6 +432,7 @@ class AddBookWindow(tk.Toplevel):
         self.titel_var.set("")
         self.autor_var.set("")
         self.kategorie_var.set("")
+        self.image_path_var.set("") # Bildpfad-Feld leeren
         self.preis_var.set("")
         self.verboten_var.set(False)
         self.indiziert_var.set(False)

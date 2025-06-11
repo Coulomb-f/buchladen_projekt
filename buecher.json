@@ -165,7 +165,8 @@
     "kategorie": "Philosophie",
     "preis": 24.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/der_taegliche_stoiker.jpg"
   },
   {
     "titel": "Der Weg des Künstlers",

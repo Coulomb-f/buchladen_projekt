@@ -26,7 +26,8 @@ class Buchladen:
                         kategorie=item.get('kategorie', 'Unbekannte Kategorie'),
                         preis=float(item.get('preis', 0.0)),
                         verboten=bool(item.get('verboten', False)),
-                        indiziert=bool(item.get('indiziert', False))
+                        indiziert=bool(item.get('indiziert', False)),
+                        image_path=item.get('image_path', None) # Bildpfad optional
                     )
                     self.buch_hinzufuegen(buch)
             print(f"{len(self.inventar)} Bücher erfolgreich aus '{dateipfad}' geladen.")
@@ -74,14 +75,17 @@ class Buchladen:
         """Speichert das aktuelle Inventar als JSON in die angegebene Datei."""
         buecher_daten_liste = []
         for buch in self.inventar:
-            buecher_daten_liste.append({
+            buch_dict = {
                 "titel": buch.titel,
                 "autor": buch.autor,
                 "kategorie": buch.kategorie,
                 "preis": buch.preis,
                 "verboten": buch.verboten,
                 "indiziert": buch.indiziert
-            })
+            }
+            if buch.image_path:
+                buch_dict["image_path"] = buch.image_path
+            buecher_daten_liste.append(buch_dict)
         try:
             with open(dateipfad, 'w', encoding='utf-8') as f:
                 json.dump(buecher_daten_liste, f, indent=2, ensure_ascii=False)
