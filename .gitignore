@@ -65,3 +65,8 @@ venv.bak/
 # Windows
 Thumbs.db
 desktop.ini
+
+# specific files
+Buchladen_mit_GUI.txt
+*.py-deprecated
+tree.ini
