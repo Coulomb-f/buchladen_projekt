@@ -15,15 +15,22 @@ FONT_SIZE_BUTTON = 11
 FONT_SIZE_TOTAL_LABEL = 14
 FONT_SIZE_LABELFRAME_TITLE = 12
 
-COLOR_BUTTON_BG = "#F5F5F5"
+# Neue Farbpalette passend zum Gradient (weiß bis #9AC93C)
+COLOR_GRADIENT_START = "#FFFFFF"
+COLOR_GRADIENT_END = "#9AC93C"
+COLOR_BUTTON_BG = "#C8E6A0"         # Helles Grün
 COLOR_BUTTON_FG = "#424242"
-COLOR_BUTTON_HOVER_BG = "#E0E0E0"
-COLOR_BUTTON_PRESSED_BG = "#BDBDBD"
+COLOR_BUTTON_HOVER_BG = "#B2D97C"   # Mittelgrün
+COLOR_BUTTON_PRESSED_BG = "#9AC93C" # Kräftiges Grün
 
-COLOR_BUTTON_PRIMARY_BG = "#2196F3"
+COLOR_BUTTON_PRIMARY_BG = "#9AC93C" # Kräftiges Grün
 COLOR_BUTTON_PRIMARY_FG = "#FFFFFF"
-COLOR_BUTTON_PRIMARY_HOVER_BG = "#1976D2"
-COLOR_BUTTON_PRIMARY_PRESSED_BG = "#0D47A1"
+COLOR_BUTTON_PRIMARY_HOVER_BG = "#7AA82F" # Dunkleres Grün
+COLOR_BUTTON_PRIMARY_PRESSED_BG = "#5C7D22" # Noch dunkler
+
+COLOR_KASSE_BG = "#FFA500"          # Orange für Kasse
+COLOR_KASSE_HOVER_BG = "#FFB733"    # Helles Orange
+COLOR_KASSE_PRESSED_BG = "#CC8400"  # Dunkleres Orange
 
 
 class BuchladenApp:
@@ -35,12 +42,27 @@ class BuchladenApp:
         self.aktuell_angezeigte_buecher = [] # Wichtig für korrekte Auswahl
 
         self.buch_bild_label = None # Initialisiere das Bild-Label Attribut
+        self.gradient_bg_image = None # Für das Hintergrundbild
+
         self.root.title("Das Leseparadies - GUI")
-        self.root.geometry("1200x650") # Etwas mehr Höhe für das Dropdown
+        window_width = 1200
+        window_height = 650
+        self.root.geometry(f"{window_width}x{window_height}")
+        # self.root.configure(bg="#49B5E3") # Entfernt, da wir ein Bild verwenden
+
+        # Lade das Gradienten-Hintergrundbild
+        try:
+            project_root_dir = os.path.dirname(self.json_dateipfad) # Ermittle Projekt-Root
+            gradient_image_path = os.path.join(project_root_dir, ".helper", "gradient.png")
+            if os.path.exists(gradient_image_path):
+                img = Image.open(gradient_image_path)
+                img = img.resize((window_width, window_height), Image.Resampling.LANCZOS)
+                self.gradient_bg_image = ImageTk.PhotoImage(img)
+        except Exception as e:
+            print(f"Fehler beim Laden des Gradienten-Hintergrundbildes: {e}")
 
         self.style = ttk.Style()
         self._konfiguriere_stile()
-        
         self._erstelle_widgets()
         self._update_inventar_anzeige() # Initiales Füllen mit allen Büchern
         self._erstelle_menuleiste() # Menüleiste erstellen
@@ -51,16 +73,41 @@ class BuchladenApp:
         self.style.configure("TLabelFrame", font=(FONT_FAMILY, FONT_SIZE_DEFAULT), padding=5)
         self.style.configure("TLabelFrame.Label", font=(FONT_FAMILY, FONT_SIZE_LABELFRAME_TITLE, "bold"))
         self.style.configure("TLabel", font=(FONT_FAMILY, FONT_SIZE_DEFAULT))
-        self.style.configure("App.TButton", font=(FONT_FAMILY, FONT_SIZE_BUTTON), padding=(10, 6), relief="flat", background=COLOR_BUTTON_BG, foreground=COLOR_BUTTON_FG)
-        self.style.map("App.TButton", background=[('pressed', COLOR_BUTTON_PRESSED_BG), ('active', COLOR_BUTTON_HOVER_BG)])
-        self.style.configure("Primary.TButton", font=(FONT_FAMILY, FONT_SIZE_BUTTON, "bold"), padding=(12, 8), relief="flat", background=COLOR_BUTTON_PRIMARY_BG, foreground=COLOR_BUTTON_PRIMARY_FG)
-        self.style.map("Primary.TButton", background=[('pressed', COLOR_BUTTON_PRIMARY_PRESSED_BG), ('active', COLOR_BUTTON_PRIMARY_HOVER_BG)])
+        # Standard-Button (grünlich)
+        self.style.configure("App.TButton",
+                             font=(FONT_FAMILY, FONT_SIZE_BUTTON),
+                             padding=(10, 6), relief="flat",
+                             background=COLOR_BUTTON_BG, foreground=COLOR_BUTTON_FG)
+        self.style.map("App.TButton",
+            background=[('pressed', COLOR_BUTTON_PRESSED_BG), ('active', COLOR_BUTTON_HOVER_BG)])
+        # Primary-Button (kräftiges Grün)
+        self.style.configure("Primary.TButton",
+                             font=(FONT_FAMILY, FONT_SIZE_BUTTON, "bold"),
+                             padding=(12, 8), relief="flat",
+                             background=COLOR_BUTTON_PRIMARY_BG, foreground=COLOR_BUTTON_PRIMARY_FG)
+        self.style.map("Primary.TButton",
+            background=[('pressed', COLOR_BUTTON_PRIMARY_PRESSED_BG), ('active', COLOR_BUTTON_PRIMARY_HOVER_BG)])
+        # Kasse-Button (Orange)
+        self.style.configure("Kasse.TButton",
+                             font=(FONT_FAMILY, FONT_SIZE_BUTTON, "bold"),
+                             padding=(12, 8), relief="flat",
+                             background=COLOR_KASSE_BG, foreground="#FFFFFF")
+        self.style.map("Kasse.TButton",
+            background=[('pressed', COLOR_KASSE_PRESSED_BG), ('active', COLOR_KASSE_HOVER_BG)])
         self.style.configure("TCombobox", font=(FONT_FAMILY, FONT_SIZE_DEFAULT), padding=5)
-
+        # self.style.configure("App.TFrame", background="#49B5E3") # Nicht mehr benötigt für main_frame
 
     def _erstelle_widgets(self):
-        main_frame = ttk.Frame(self.root, padding="10")
+        # main_frame ist jetzt ein tk.Label, das das Gradientenbild anzeigt
+        main_frame = tk.Label(self.root, bd=0) # Erstelle das Label zuerst ohne Bild
+        
+        if self.gradient_bg_image:
+            main_frame.configure(image=self.gradient_bg_image) # Setze das Bild, falls vorhanden
+            main_frame.image = self.gradient_bg_image # type: ignore[attr-defined] # Referenz behalten (Standard-Tkinter-Idiom)
+            
         main_frame.pack(fill=tk.BOTH, expand=True)
+        # Beachten Sie: padding="10" wie bei ttk.Frame ist hier nicht direkt anwendbar.
+        # Wenn Padding um den gesamten Inhalt benötigt wird, könnte ein innerer Frame verwendet werden.
 
         # --- Filter Frame ---
         filter_frame = ttk.Frame(main_frame)
@@ -131,19 +178,24 @@ class BuchladenApp:
         self.buch_bild_label.pack()
 
         # --- Untere Zeile: Gesamtpreis und Kasse ---
-        kasse_frame = ttk.Frame(main_frame)
-        kasse_frame.grid(row=2, column=0, columnspan=4, pady=(15, 10), sticky="ew") # Spaltenspan anpassen
+        self.kasse_frame_ref = ttk.Frame(main_frame) # Store as instance attribute
+        self.kasse_frame_ref.grid(row=2, column=0, columnspan=4, pady=(15, 10), sticky="ew") # Spaltenspan anpassen
         self.total_label_var = tk.StringVar(value="Gesamtpreis: 0,00 €")
-        total_label = ttk.Label(kasse_frame, textvariable=self.total_label_var, font=(FONT_FAMILY, FONT_SIZE_TOTAL_LABEL, "bold"))
+        total_label = ttk.Label(self.kasse_frame_ref, textvariable=self.total_label_var, font=(FONT_FAMILY, FONT_SIZE_TOTAL_LABEL, "bold"))
         total_label.pack(side=tk.LEFT, padx=10)
-        self.kasse_button = ttk.Button(kasse_frame, text="Zur Kasse", command=self._zur_kasse, style="Primary.TButton")
+        # Kasse-Button bekommt jetzt den neuen Stil
+        self.kasse_button = ttk.Button(self.kasse_frame_ref, text="Zur Kasse", command=self._zur_kasse, style="Kasse.TButton")
         self.kasse_button.pack(side=tk.RIGHT, padx=10)
 
         main_frame.rowconfigure(1, weight=1) # Inventar/Wagen-Zeile soll skalieren
         main_frame.columnconfigure(0, weight=1) # Inventar-Spalte
         main_frame.columnconfigure(2, weight=1) # Wagen-Spalte
         main_frame.columnconfigure(3, weight=0) # Bild-Spalte (feste Größe)
-        main_frame.columnconfigure(1, weight=0) # Button-Spalte nicht
+        main_frame.columnconfigure(1, weight=0) # Button-Spalte nicht        
+
+        # Stelle sicher, dass der kasse_frame über dem Hintergrundbild des main_frame gezeichnet wird.
+        if hasattr(self, 'kasse_frame_ref'): # Check if kasse_frame_ref exists
+            self.kasse_frame_ref.lift()
 
     def _erstelle_menuleiste(self):
         menubar = tk.Menu(self.root)
@@ -318,6 +370,10 @@ class BuchladenApp:
             photo = ImageTk.PhotoImage(img)
             self.buch_bild_label.config(image=photo)
             self.buch_bild_label.image = photo  # type: ignore[attr-defined]
+            # Stelle sicher, dass kasse_frame nach dem Anzeigen des Bildes oben ist
+            if hasattr(self, 'kasse_frame_ref'):
+                self.kasse_frame_ref.lift()
+                self.root.update_idletasks() # Force GUI update
         except Exception as e:
             print(f"Fehler beim Laden des Bildes: {e}")
             self._clear_buch_bild()
@@ -326,6 +382,10 @@ class BuchladenApp:
         if hasattr(self, "buch_bild_label") and self.buch_bild_label is not None:
             self.buch_bild_label.config(image="")
             self.buch_bild_label.image = None  # type: ignore[attr-defined]
+            # Stelle sicher, dass kasse_frame nach dem Löschen des Bildes oben ist
+            if hasattr(self, 'kasse_frame_ref'):
+                self.kasse_frame_ref.lift()
+                self.root.update_idletasks() # Force GUI update
 
 class AddBookWindow(tk.Toplevel):
     def __init__(self, parent, buchladen_instanz: Buchladen, json_dateipfad: str):
@@ -370,8 +430,8 @@ class AddBookWindow(tk.Toplevel):
         ttk.Label(main_frame, text="Bildpfad:").grid(row=3, column=0, sticky="w", pady=5) # Zeile 3 für Bildpfad
         ttk.Entry(main_frame, textvariable=self.image_path_var, width=40).grid(row=3, column=1, sticky="ew", pady=5) # Zeile 3
 
-        ttk.Label(main_frame, text="Preis (€):").grid(row=4, column=0, sticky="w", pady=5) # Zeile 4 für Preis
-        ttk.Entry(main_frame, textvariable=self.preis_var, width=10).grid(row=4, column=1, sticky="w", pady=5) # Zeile 4
+        ttk.Label(main_frame, text="Preis (€):").grid(row=5, column=0, sticky="w", pady=5) # Zeile 5 für Preis
+        ttk.Entry(main_frame, textvariable=self.preis_var, width=10).grid(row=5, column=1, sticky="w", pady=5) # Zeile 5
 
         # Checkboxen (Reihennummer anpassen)
         check_frame = ttk.Frame(main_frame)
