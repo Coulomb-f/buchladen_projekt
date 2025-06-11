@@ -5,7 +5,8 @@
     "kategorie": "Roman",
     "preis": 25.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der-Herr-der-Ringe.jpg"
   },
   {
     "titel": "Eine kurze Geschichte der Zeit",
@@ -13,7 +14,8 @@
     "kategorie": "Wissenschaft",
     "preis": 19.95,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Eine kurze Geschichte der Zeit.jpg"
   },
   {
     "titel": "Sapiens: Eine kurze Geschichte der Menschheit",
@@ -21,7 +23,8 @@
     "kategorie": "Sachbuch",
     "preis": 22.0,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Sapiens Eine kurze Geschichte der Menschheit.jpg"
   },
   {
     "titel": "Dune - Der Wüstenplanet",
@@ -29,7 +32,8 @@
     "kategorie": "Roman",
     "preis": 18.5,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Dune - Der Wüstenplanet.jpg"
   },
   {
     "titel": "Clean Code",
@@ -37,7 +41,8 @@
     "kategorie": "Sachbuch",
     "preis": 44.9,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Clean Code.jpg"
   },
   {
     "titel": "Der Prozess",
@@ -45,7 +50,8 @@
     "kategorie": "Roman",
     "preis": 12.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Prozess.jpg"
   },
   {
     "titel": "1984",
@@ -53,7 +59,8 @@
     "kategorie": "Roman",
     "preis": 15.0,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/1984.jpg"
   },
   {
     "titel": "Der Alchimist",
@@ -61,7 +68,8 @@
     "kategorie": "Roman",
     "preis": 10.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Alchimist.jpg"
   },
   {
     "titel": "Die Verwandlung",
@@ -69,7 +77,8 @@
     "kategorie": "Roman",
     "preis": 8.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Die Verwandlung.jpg"
   },
   {
     "titel": "Der Steppenwolf",
@@ -77,7 +86,8 @@
     "kategorie": "Roman",
     "preis": 14.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Steppenwolf.jpg"
   },
   {
     "titel": "Der kleine Prinz",
@@ -85,7 +95,8 @@
     "kategorie": "Kinderbuch",
     "preis": 9.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der kleine Prinz.jpg"
   },
   {
     "titel": "Die Physiker",
@@ -93,7 +104,8 @@
     "kategorie": "Drama",
     "preis": 11.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Die Physiker.jpg"
   },
   {
     "titel": "Mein Kampf",
@@ -101,7 +113,8 @@
     "kategorie": "Politik",
     "preis": 0.0,
     "verboten": true,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Mein Kampf.jpg"
   },
   {
     "titel": "Bitte anstrapsen - Lesebuch der Lust",
@@ -109,15 +122,17 @@
     "kategorie": "Erotik",
     "preis": 9.99,
     "verboten": false,
-    "indiziert": true
+    "indiziert": true,
+    "image_path": "assets/Bitte anstrapsen - Lesebuch der Lust.jpg"
   },
   {
-    "titel": "Naschkatze – Urlaubsvergnügen voller Lust",
+    "titel": "Naschkatze - Urlaubsvergnügen voller Lust",
     "autor": "Ullstein Verlag",
     "kategorie": "Erotik",
     "preis": 9.99,
     "verboten": false,
-    "indiziert": true
+    "indiziert": true,
+    "image_path": "assets/Naschkatze - Urlaubsvergnügen voller Lust.jpg"
   },
   {
     "titel": "Der Weg des wahren Mannes ",
@@ -125,7 +140,8 @@
     "kategorie": "Erotik",
     "preis": 20.0,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Weg des wahren Mannes .jpg"
   },
   {
     "titel": "Schlampen mit Moral: Erweiterte Neuausgabe",
@@ -133,7 +149,8 @@
     "kategorie": "Erotik",
     "preis": 16.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Schlampen mit Moral Erweiterte Neuausgabe.jpg"
   },
   {
     "titel": "Die 120 Tage von Sodom",
@@ -141,7 +158,8 @@
     "kategorie": "Erotik",
     "preis": 12.99,
     "verboten": false,
-    "indiziert": true
+    "indiziert": true,
+    "image_path": "assets/Die 120 Tage von Sodom.jpg"
   },
   {
     "titel": "Ein bisschen härter ist viel besser",
@@ -149,7 +167,8 @@
     "kategorie": "Erotik",
     "preis": 12.99,
     "verboten": false,
-    "indiziert": true
+    "indiziert": true,
+    "image_path": "assets/Ein bisschen härter ist viel besser.jpg"
   },
   {
     "titel": "Frühe mathematische Bildung",
@@ -157,7 +176,8 @@
     "kategorie": "Wissenschaft",
     "preis": 34.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Frühe mathematische Bildung.jpg"
   },
   {
     "titel": "Der Tägliche Stoiker",
@@ -174,7 +194,8 @@
     "kategorie": "Selbsthilfe",
     "preis": 18.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Weg des Künstlers.jpg"
   },
   {
     "titel": "Die Macht der Gewohnheit",
@@ -182,7 +203,8 @@
     "kategorie": "Psychologie",
     "preis": 16.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Die Macht der Gewohnheit.jpg"
   },
   {
     "titel": "Die Entdeckung der Langsamkeit",
@@ -190,7 +212,8 @@
     "kategorie": "Roman",
     "preis": 14.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Die Entdeckung der Langsamkeit.jpg"
   },
   {
     "titel": "Der Schatten des Windes",
@@ -198,7 +221,8 @@
     "kategorie": "Roman",
     "preis": 19.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Schatten des Windes.jpg"
   },
   {
     "titel": "Der Name der Rose",
@@ -206,7 +230,8 @@
     "kategorie": "Roman",
     "preis": 21.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Der Name der Rose.jpg"
   },
   {
     "titel": "Die unerträgliche Leichtigkeit des Seins",
@@ -214,7 +239,8 @@
     "kategorie": "Roman",
     "preis": 17.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Die unerträgliche Leichtigkeit des Seins.jpg"
   },
   {
     "titel": "Selbstbetrachtungen",
@@ -222,6 +248,7 @@
     "kategorie": "Philosophie",
     "preis": 12.99,
     "verboten": false,
-    "indiziert": false
+    "indiziert": false,
+    "image_path": "assets/Selbstbetrachtungen.jpg"
   }
 ]
