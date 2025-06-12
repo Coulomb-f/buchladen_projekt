@@ -250,5 +250,77 @@
     "verboten": false,
     "indiziert": false,
     "image_path": "assets/Selbstbetrachtungen.jpg"
+  },
+  {
+    "titel": "Praeda",
+    "autor": "Isabelle North",
+    "kategorie": "Erotik",
+    "preis": 17.9,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/Praeda.jpg"
+  },
+  {
+    "titel": "Das große Tafelwerk - neue Generation - MINT-Formelsammlung bis zum Abitur - Alle Bundesländer außer Bayern",
+    "autor": "Offizielle Mathematisch-Naturwissenschaftliche Formelsammlung für die Abiturprüfung",
+    "kategorie": "Wissenschaft",
+    "preis": 4.25,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/Das große Tafelwerk - neue Generation - MINT-Formelsammlung bis zum Abitur - Alle Bundesländer außer Bayern.jpg"
+  },
+  {
+    "titel": "David Bowie",
+    "autor": "Dylan Jones",
+    "kategorie": "Neue Kategorie...",
+    "preis": 14.5,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/David Bowie.jpg"
+  },
+  {
+    "titel": "Es war einmal ein Töpfchen...",
+    "autor": "Alona Frankel",
+    "kategorie": "Kinderbuch",
+    "preis": 7.95,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets\\Es war einmal ein Töpfchen....jpg"
+  },
+  {
+    "titel": "Problematic Summer Romance",
+    "autor": "Ali Hazelwood",
+    "kategorie": "Roman",
+    "preis": 12.69,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/Problematic Summer Romance.jpg"
+  },
+  {
+    "titel": "House of Flame and Shadow",
+    "autor": "Sarah J. Maas",
+    "kategorie": "Roman",
+    "preis": 12.69,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/House of Flame and Shadow.jpg"
+  },
+  {
+    "titel": "Le Petit Prince: Antoine de Saint-Exupéry",
+    "autor": "Antoine de Saint-Exupery",
+    "kategorie": "Kinderbuch",
+    "preis": 4.2,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/Le Petit Prince Antoine de Saint-Exupéry.jpg"
+  },
+  {
+    "titel": "Der Zauberberg",
+    "autor": "Thomas Mann",
+    "kategorie": "Roman",
+    "preis": 10.0,
+    "verboten": false,
+    "indiziert": false,
+    "image_path": "assets/Der Zauberberg.jpg"
   }
 ]
