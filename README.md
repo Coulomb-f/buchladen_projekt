@@ -4,6 +4,10 @@ Willkommen beim Buchladen-Projekt! Diese Desktop-Anwendung dient als Proof-of-Co
 
 ## Features
 
+## Screenshot
+
+![Buchladen Anwendung Screenshot](dasLeseparadies.png) 
+
 *   **Buchinventar anzeigen**: Durchsuchen Sie eine Liste verfügbarer Bücher.
 *   **Filterfunktionen**:
     *   Filtern Sie Bücher nach Kategorie.
