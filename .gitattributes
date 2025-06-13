@@ -1,0 +1,3 @@
+# Auto detect text files and ensure they use LF line endings in the repo
+# and the OS-native line endings in the working directory.
+* text=auto
