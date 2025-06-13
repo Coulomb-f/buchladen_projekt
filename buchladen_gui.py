@@ -66,10 +66,14 @@ class BuchladenApp:
         
         self.kategorie_filter_var = tk.StringVar()
         filter_optionen = ["Alle Anzeigen"] + self.buchladen.get_alle_kategorien() + ["Nur FSK18", "Nur Verbotene"]
-        self.kategorie_dropdown = ctk.CTkComboBox(filter_frame, variable=self.kategorie_filter_var, values=filter_optionen, width=200, state="readonly")
+        self.kategorie_dropdown = ctk.CTkComboBox(filter_frame, 
+                                                  variable=self.kategorie_filter_var, 
+                                                  values=filter_optionen, 
+                                                  width=200, 
+                                                  state="readonly",
+                                                  command=self._on_filter_change) # Use command
         self.kategorie_dropdown.pack(side="left", padx=5)
         self.kategorie_dropdown.set("Alle Anzeigen")
-        self.kategorie_dropdown.bind("<<ComboboxSelected>>", self._on_filter_change)
 
         # --- Linke Spalte: Inventar ---
         inventar_frame = ctk.CTkFrame(main_frame)
@@ -148,10 +152,14 @@ class BuchladenApp:
         if current_filter_value not in neue_filter_optionen: # Falls der alte Filter (eine gelöschte Kat.?) nicht mehr existiert
             self.kategorie_dropdown.set("Alle Anzeigen") # Auf "Alle Anzeigen" zurücksetzen
             self._on_filter_change() # Und die Anzeige entsprechend aktualisieren
+            # Note: If _on_filter_change is called without args here, it needs to handle that.
+            # The command callback provides an arg, but direct calls might not.
+            # For simplicity, assuming this programmatic call will use the new value from .set()
 
-    def _on_filter_change(self, event=None):
-        """Wird aufgerufen, wenn eine Auswahl im Dropdown getroffen wird."""
-        filter_wert = self.kategorie_filter_var.get()
+    def _on_filter_change(self, filter_wert: str | None = None): # Modified signature
+        """Wird aufgerufen, wenn eine Auswahl im Dropdown getroffen oder der Filter programmatisch geändert wird."""
+        if filter_wert is None: # Handle programmatic calls that don't pass the value (e.g. from _aktualisiere_gui_nach_buch_hinzugefuegt)
+            filter_wert = self.kategorie_filter_var.get()
         self._update_inventar_anzeige(filter_wert)
 
     def _update_inventar_anzeige(self, filter_kriterium=None):
@@ -482,7 +490,7 @@ class AddBookWindow(ctk.CTkToplevel):
 
         # Bildpfad verarbeiten, um "assets/" automatisch hinzuzufügen, falls nicht vorhanden
         final_image_path = None
-        if image_path_input:
+        if image_path_input: # User provided an explicit path
             # Entferne führendes "assets/" oder "assets\" (Groß-/Kleinschreibung ignorieren)
             # und normalisiere interne Pfadtrenner für die Dateinamensverarbeitung.
             filename_part = image_path_input
@@ -490,18 +498,23 @@ class AddBookWindow(ctk.CTkToplevel):
                 filename_part = filename_part[len("assets/"):]
             elif filename_part.lower().startswith("assets\\"):
                 filename_part = filename_part[len("assets\\"):]
-
+            
             # Stelle sicher, dass der Dateiname eine Erweiterung hat, standardmäßig .jpg
             if filename_part and not os.path.splitext(filename_part)[1]: # Prüft, ob eine Erweiterung fehlt
                 filename_part += ".jpg"
             
-            # Baue den Pfad mit "assets" und dem (ggf. korrigierten) Dateinamen zusammen
-            # os.path.join stellt sicher, dass die korrekten OS-spezifischen Trenner verwendet werden
-            # für den Fall, dass der filename_part selbst Unterverzeichnisse enthält.
-            constructed_path = os.path.join("assets", filename_part)
-
-            # Für die Speicherung im JSON wollen wir immer Forward-Slashes
-            final_image_path = constructed_path.replace("\\", "/")
+            if filename_part: # Ensure filename_part is not empty after stripping/processing
+                # Baue den Pfad mit "assets" und dem (ggf. korrigierten) Dateinamen zusammen
+                constructed_path = os.path.join("assets", filename_part)
+                # Für die Speicherung im JSON wollen wir immer Forward-Slashes
+                final_image_path = constructed_path.replace("\\", "/")
+        else: # image_path_input is empty, try to generate from title
+            if titel: # Ensure title is not empty
+                sanitized_title = self._sanitize_filename(titel)
+                if sanitized_title: # Ensure sanitized_title is not empty after sanitization
+                    filename_part = sanitized_title + ".jpg" # Default to .jpg
+                    constructed_path = os.path.join("assets", filename_part)
+                    final_image_path = constructed_path.replace("\\", "/")
 
         # Neues Buch-Objekt erstellen
         neues_buch = Buch(titel, autor, kategorie, preis, verboten, indiziert, final_image_path)

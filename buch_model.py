@@ -11,7 +11,7 @@
 # Beschreibung: Siehe ggf. # Ziel: weiter unten
 #
 # @autor: Phillip Leupold
-# Version: 1.0.0
+# Version: 0.9.0
 # Datum: 2025-06-10
 # ----------------------------------------------------------
 

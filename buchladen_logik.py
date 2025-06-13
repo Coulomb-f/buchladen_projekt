@@ -44,9 +44,8 @@ class Buchladen:
 
     def suche_nach_kategorie(self, kategorie_suche: str) -> list:
         """Durchsucht das Inventar nach Büchern einer bestimmten Kategorie (case-insensitive)."""
-        if not kategorie_suche or kategorie_suche.lower() == "alle anzeigen":
-            return list(self.inventar) # Gibt eine Kopie des gesamten Inventars zurück
-            
+        # The "alle anzeigen" case and empty kategorie_suche should be handled by get_gefilterte_buecher
+        # This method now assumes kategorie_suche is a valid category string to search for.
         gefundene_buecher = []
         for buch in self.inventar:
             if buch.kategorie.lower() == kategorie_suche.lower():
