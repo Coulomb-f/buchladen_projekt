@@ -2,7 +2,7 @@
 
 Willkommen beim Buchladen-Projekt! Diese Desktop-Anwendung dient als Proof-of-Concept (POC) und demonstriert, wie man mit Python, Tkinter und der CustomTkinter-Bibliothek ansprechende und moderne grafische Benutzeroberflächen erstellen kann. Die Anwendung simuliert einen einfachen Online-Buchladen mit Inventarverwaltung und Einkaufswagenfunktion.
 
-## Features
+## Features v0.9.0
 
 ## Screenshot
 
