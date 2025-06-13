@@ -11,7 +11,7 @@
 # Beschreibung: Siehe ggf. # Ziel: weiter unten
 #
 # @autor: Phillip Leupold
-# Version: 1.0.0
+# Version: 0.9.0
 # Datum: 2025-06-10
 # ----------------------------------------------------------
 
@@ -19,13 +19,15 @@
 
 class Buch:
     """Repräsentiert ein einzelnes Buch mit Titel, Autor, Kategorie und Preis."""
-    def __init__(self, titel: str, autor: str, kategorie: str, preis: float, verboten: bool = False, indiziert: bool = False):
+    def __init__(self, titel: str, autor: str, kategorie: str, preis: float, 
+                 verboten: bool = False, indiziert: bool = False, image_path: str | None = None):
         self.titel = titel
         self.autor = autor
         self.kategorie = kategorie
         self.preis = preis
         self.verboten = verboten
         self.indiziert = indiziert
+        self.image_path = image_path  # Optionales Bild
 
     def __str__(self) -> str:
         """Gibt eine benutzerfreundliche Zeichenkette für das Buch zurück."""
@@ -40,5 +42,4 @@ class Buch:
 
     def __repr__(self) -> str:
         """Gibt eine eindeutige, technische Repräsentation des Objekts zurück."""
-        return f"Buch(titel='{self.titel}', autor='{self.autor}', preis={self.preis}, verboten={self.verboten}, indiziert={self.indiziert})"
-
+        return f"Buch(titel='{self.titel}', autor='{self.autor}', preis={self.preis}, verboten={self.verboten}, indiziert={self.indiziert}, image_path='{self.image_path}')"

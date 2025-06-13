@@ -1,7 +1,0 @@
-Entwickle ein Python-Programm, das eine einfache Simulation eines Online-Buchladens durchführt. Der Buchladen soll Bücher in verschiedenen Kategorien (z.B. Roman, Sachbuch, Wissenschaft) führen. Jedes Buch hat einen Titel, einen Autor, eine Kategorie und einen Preis. Nutze deine Kenntnisse in objektorientierter Programmierung, um Klassen für Bücher und den Buchladen zu definieren. Implementiere zudem Funktionen für das Hinzufügen von Büchern, das Durchsuchen nach Kategorien und das Berechnen des Gesamtpreises für eine Auswahl von Büchern. Berücksichtige dabei folgende Anforderungen:
-
-a) Definiere eine Klasse Buch mit den Attributen titel, autor, kategorie und preis. Implementiere eine __init__-Methode, die diese Attribute initialisiert, und eine __str__-Methode, die eine repräsentative Zeichenkette für das Buchobjekt zurückgibt.
-
-b) Definiere eine Klasse Buchladen mit einem Attribut inventar, das eine Liste von Buchobjekten speichert. Implementiere Methoden für das Hinzufügen eines Buches zum Inventar, das Durchsuchen des Inventars nach Kategorie und das Berechnen des Gesamtpreises einer Buchauswahl.
-
-c) Erstelle ein paar Buchobjekte und füge sie zum Inventar des Buchladens hinzu. Teste anschließend die Funktionalitäten des Buchladens, indem du Bücher nach Kategorie durchsuchst und den Gesamtpreis für eine Auswahl von Büchern berechnest. 
